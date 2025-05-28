@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+.editor-container {
+    width: 80%;
+    margin: 0 auto;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.toolbar {
+    padding: 10px;
+    background-color: #e0e0e0;
+    border-bottom: 1px solid #ccc;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.toolbar button,
+.toolbar select,
+.toolbar input[type="color"] {
+    border: 1px solid #bbb;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 3px;
+    font-size: 11px;
+	height:22px;
+	margin-top:-1px;
+	
+}
+
+.toolbar img {
+	width:20px;
+	height:20px;
+	border-radius:3px;
+	cursor:pointer;
+}
+
+.toolbar button:hover,
+.toolbar select:hover,
+.toolbar input[type="color"]:hover {
+    background-color: #e0e0e0;
+}
+
+.editor {
+    min-height: 300px;
+    padding: 15px;
+    outline: none; /* Remove default focus outline */
+    line-height: 1.6;
+}
+
+/* Basic styling for content within the editor */
+.editor p {
+    margin-bottom: 10px;
+}
+
+
+
+.arabicinline {
+	font-family:calibri;
+	color:red;
+}
