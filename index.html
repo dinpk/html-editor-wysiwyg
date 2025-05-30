@@ -1,17 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Basic WYSIWYG Editor</title>
     <link rel="stylesheet" href="style.css">
+	<script src="script.js"></script>
 </head>
 <body>
     <div class="editor-container">
         <div class="toolbar">
-			
-		<!-- FORMAT DOC (SELECTION) -->
-			
 			<img src="icons/icon_undo.png" onclick="formatDoc('undo')" title="Undo"> 
 			<img src="icons/icon_redo.png" onclick="formatDoc('redo')" title="Redo"> 
 			<img src="icons/icon_text_copy.png" onclick="formatDoc('copy')" title="Copy"> 
@@ -23,7 +21,9 @@
             <img src="icons/icon_decorate_strikethrough.png" onclick="formatDoc('strikeThrough')" title="Strikethrough">
             <img src="icons/icon_list_ordered.png" onclick="formatDoc('insertOrderedList')" title="Ordered List">
             <img src="icons/icon_list_unordered.png" onclick="formatDoc('insertUnorderedList')" title="Unordered List"> 
-            <img src="icons/icon_link.png" onclick="formatDoc('createLink', prompt('Enter URL:'))" title="Hyperlink"> 
+            <img src="icons/icon_link_web.png" onclick="formatDoc('createLink', prompt('Enter Link:'))" title="Web Link"> 
+            <img src="icons/icon_link_email.png" onclick="insertLink('mailto:')" title="Email Link"> 
+            <img src="icons/icon_link_phone.png" onclick="insertLink('tel:')" title="Phone Link"> 
             <img src="icons/icon_unlink.png" onclick="formatDoc('unlink')" title="Unlink"> 
             <img src="icons/icon_superscript.png" onclick="formatDoc('superscript')" title="Superscript"> 
             <img src="icons/icon_subscript.png" onclick="formatDoc('subscript')" title="Subscript"> 
@@ -34,38 +34,55 @@
 			<img src="icons/icon_unformat.png" onclick="formatDoc('removeFormat')" title="Remove Formatting"> 
 			<img src="icons/icon_indent.png" onclick="formatDoc('indent')" title="Indent"> 
 			<img src="icons/icon_outdent.png" onclick="formatDoc('outdent')" title="Outdent"> 
-			<!--<img src="icons/icon_line_break.png" onclick="formatDoc('insertBrOnReturn')" title="Linebreak"> -->
+			<img src="icons/icon_line_break.png" onclick="insertTag('br')" title="Linebreak">
 			<img src="icons/icon_horizontal_rule.png" onclick="formatDoc('insertHorizontalRule')" title="Horizontal Rule"> 
 			<img src="icons/icon_image_insert.png" onclick="formatDoc('insertImage')" title="Image URL"> 
+			<img src="icons/icon_audio_insert.png" onclick="insertMedia('video/mp4')" title="MP4 Video"> 
+			<img src="icons/icon_video_insert.png" onclick="insertMedia('audio/mp3')" title="MP3 Audio"> 
             <input type="color" onchange="formatDoc('foreColor', this.value)" title="Text Color"> 
             <input type="color" onchange="formatDoc('backColor', this.value)" title="Background Color"> 
-			
-		<!-- FORMAT DOC (BLOCK) -->
-			
-            <select onchange="formatDoc('formatBlock', this.value)" title=""> 
-                <option value="p">Normal</option>
+            <select onchange="formatDoc('formatBlock', this.value)" title="Block Elements"> 
+                <option value="p"></option>
+                <option value="p">Paragraph</option>
                 <option value="h1">Heading 1</option>
                 <option value="h2">Heading 2</option>
                 <option value="h3">Heading 3</option>
                 <option value="h4">Heading 4</option>
                 <option value="h5">Heading 5</option>
                 <option value="h6">Heading 6</option>
+                <option value="address">Address</option>
+                <option value="pre">Pre</option>
+            </select>
+            <select onchange="insertTag(this.value)" title="Inline Elements"> 
+                <option value=""></option>
+                <option value="abbr">Abbreviation</option>
+                <option value="acronym">Acronym</option>
+                <option value="bdo">Bi-directional</option>
+                <option value="big">Big</option>
+                <option value="cite">Citation</option>
+                <option value="code">Code</option>
+                <option value="dfn">Definition</option>
+                <option value="em">Emphasis</option>
+                <option value="kbd">Keyboard</option>
+                <option value="output">Output</option>
+                <option value="q">Short quote</option>
+                <option value="samp">Sample</option>
+                <option value="small">Small</option>
+                <option value="span">Span</option>
+                <option value="strong">Strong</option>
+                <option value="time">Time</option>
+                <option value="var">Var</option>
             </select>
 			<img src="icons/icon_blockquote.png" onclick="formatDoc('formatBlock', 'blockquote')" title="Blockquote"> 
-			<img src="icons/icon_align_justify_poetry.png" onclick="formatDoc('formatBlock', 'pre')" title="Pre"> 
-	
-
-		<!-- CUSTOM INSERT TAGS FOR SELECTION -->
-
-			<img src="icons/icon_arabic_inline.png" onclick="insertTag('span', 'arabicinline')" title="Arabic Inline"> 
-			<img src="icons/icon_english_inline.png" onclick="insertTag('span', 'englishinline')" title="English Inline"> 
-			
+			<img src="icons/icon_text_ltr.png" onclick="changeDirection('ltr')" title="Left to Right"> 
+			<img src="icons/icon_text_rtl.png" onclick="changeDirection('rtl')" title="Right to Left"> 
+			<img src="icons/icon_table.png" onclick="insertTable()" title="Insert Table"> 
         </div>
-        <div id="editor" class="editor" contenteditable="true" dir="rtl">
-            <p>جس زمانے میں بوسنیا اور سربیا میں قتلِ عام ہو رہا تھا، اجتماعی قبریں نکل رہی تھی اور مشرقی یورپ میں بوسنیا کے مسلمانوں کی کٹائی ہو رہی تھی، پرانے لوگوں کو یاد ہوگا، اس دور میں بوسنیا کے صدر تھے الحاج عزت بیگویج، وہ دنیا میں گھوم پھر کر اپنا ماجرا سنا رہے تھے، اپنی داستان بتا رہے تھے اور مسلمانوں کو اس طرف متوجہ کر رہے تھے۔ لندن کی مسلمان تنظیموں نے ان کے اعزاز میں ایک استقبالیہ دیا جس کا ایک مقصد تو یہ تھا کہ عزت بیگویج اپنا موقف اور صورتحال بیان کریں اور دوسرا مقصد یہ بھی تھا کہ وہ ہمارے جس تعاون کے مستحق ہیں اس کی کوئی صورت نکالی جائے۔ پاکستان کی نمائندگی حضرت مولانا شاہ احمد نورانی رحمۃ اللہ علیہ کر رہے تھے۔ پاکستان سے دو نمائندے تھے ایک حضرت نورانیؒ اور ان کے رفیق کار کے طور پر دوسرا میں تھا۔ وہاں بوسنیا کے صدر نے ایک جملہ کہا، وہ میں آپ سے ذکر کرنا چاہوں گا۔ منظر یہ ہے کہ مسلمانوں کی کٹائی ہو رہی ہے، ظلم ہو رہا ہے، اجتماعی قبریں نکل رہی ہیں اور دنیا چیخ رہی ہے۔ عزت بیگویج کا جملہ آج تک میرے سینے میں کھبا ہوا ہے، انہوں نے کہا، ہم بوسنیا کے مسلمانوں کا اصل مسئلہ یہ ہے کہ ہمارے پڑوس میں کوئی پاکستان نہیں ہے، ہماری سرحدیں پاکستان سے نہیں لگتیں۔ سچی بات ہے کہ پاکستان کی محبت تو پہلے بھی دل میں تھی لیکن اس جملے نے دل کی دنیا ہی بدل دی کہ پاکستان صرف ہمارے لیے ہی نہیں عالمِ اسلام کے لیے بھی اللہ کی نعمت ہے۔</p>
+        <div id="editor" class="editor" contenteditable="true">
+            <p>
+				&nbsp;
+			</p>
         </div>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>
