@@ -35,6 +35,56 @@ function insertTag(tag_name, class_name) {
 	}
 }
 
+
+function insertImage() {
+	
+	setEditorFocus();
+	
+	let url = prompt("Enter image URL");
+	let width = prompt("Enter width in px, %, auto");
+	let height = prompt("Enter height in px, %, auto");
+	
+	if (!url || !width || !height) return;
+	
+	let selection = window.getSelection();
+	
+	if (selection.rangeCount) {
+		let html = "<img src='" + url + "' style='width:" + width + ";height:" + height + ";'>";
+		let range = selection.getRangeAt(0);
+		let fragment = document.createRange().createContextualFragment(html);
+		range.deleteContents();
+		range.insertNode(fragment);
+		range.collapse(false);
+		selection.removeAllRanges();
+		selection.addRange(range);		
+	}
+
+}
+
+function insertHTML() {
+
+	setEditorFocus();
+
+	let html = prompt("Paste HTML");
+	
+	if (!html) return;
+
+	let selection = window.getSelection();
+
+	if (selection.rangeCount) {
+		let range = selection.getRangeAt(0);
+		let fragment = document.createRange().createContextualFragment(html);
+		range.deleteContents();
+		range.insertNode(fragment);
+		range.collapse(false);
+		selection.removeAllRanges();
+		selection.addRange(range);		
+	}
+	
+}
+
+
+
 function insertMedia(media_type) {
 	
 	setEditorFocus();
