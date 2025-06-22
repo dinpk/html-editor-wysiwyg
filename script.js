@@ -138,6 +138,37 @@ function insertLink(link_type) {
 	
 }
 
+
+
+function insertHeadingIndex() {
+	let heading_index = "";
+	let anchor_number = 1;
+	let all_elements = document.querySelectorAll("*");
+	for (let i = 0; i < all_elements.length; i++) {
+		element_name = all_elements[i].localName;
+		if (element_name == "h1" || element_name == "h2" || element_name == "h3" || element_name == "h4" || element_name == "h5" || element_name == "h6") {
+			heading_index += "<li class='level-" + element_name + "'><a href='#anchor-" + anchor_number + "'>" + all_elements[i].innerHTML + "</a></li>\n";
+			all_elements[i].innerHTML = "<a name='anchor-" + anchor_number + "'></a>" + all_elements[i].innerHTML;
+			anchor_number++;
+		}
+	}
+	
+	heading_index = "<ul id='heading-index'>\n" + heading_index + "</ul>\n";
+	
+	let selection = window.getSelection();
+
+	if (selection.rangeCount) {
+		let range = selection.getRangeAt(0);
+		let fragment = document.createRange().createContextualFragment(heading_index);
+		range.deleteContents();
+		range.insertNode(fragment);
+		range.collapse(false);
+		selection.removeAllRanges();
+		selection.addRange(range);		
+	}	
+}
+
+
 function insertTable() {
 	
 	setEditorFocus();
