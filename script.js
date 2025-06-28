@@ -3,9 +3,7 @@ window.onload = function() {
 }
 
 function formatDoc(command, value = null) {
-	
 	setEditorFocus();
-	
     if (value) {
         document.execCommand(command, false, value);
     } else {
@@ -14,9 +12,7 @@ function formatDoc(command, value = null) {
 }
 
 function insertTag(tag_name, class_name) {
-	
 	setEditorFocus();
-	
 	if (tag_name.length == 0) return;
 	let tag = document.createElement(tag_name);
 	let selection = window.getSelection();
@@ -25,98 +21,40 @@ function insertTag(tag_name, class_name) {
 	if (class_name) {
 		tag.className = class_name;
 	}
-	if (selection.rangeCount) {
-		let range = selection.getRangeAt(0);
-		range.deleteContents();
-		range.insertNode(tag);
-		range.selectNodeContents(tag);
-		selection.removeAllRanges();
-		selection.addRange(range);
-	}
+	insertHTMLCode(selection,tag);
 }
 
-
 function insertImage() {
-	
 	setEditorFocus();
-	
 	let url = prompt("Enter image URL");
 	let width = prompt("Enter width in px, %, auto");
 	let height = prompt("Enter height in px, %, auto");
-	
-	if (!url || !width || !height) return;
-	
-	let selection = window.getSelection();
-	
-	if (selection.rangeCount) {
-		let html = "<img src='" + url + "' style='width:" + width + ";height:" + height + ";'>";
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(html);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
-	}
-
+	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
+	let html = "<img src='" + url + "' style='width:" + width + ";height:" + height + ";'>";
+	insertHTMLCode(window.getSelection(), html);
 }
 
 function insertHTML() {
-
 	setEditorFocus();
-
 	let html = prompt("Paste HTML");
-	
 	if (!html) return;
-
-	let selection = window.getSelection();
-
-	if (selection.rangeCount) {
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(html);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
-	}
-	
+	insertHTMLCode(window.getSelection(), html)
 }
 
-
-
 function insertMedia(media_type) {
-	
 	setEditorFocus();
-	
 	let url = prompt("Enter full file name");
 	let width = prompt("Enter width in pixels");
 	let height = prompt("Enter height in pixels");
-	
-	if (!url || !width || !height) return;
-	
-	let selection = window.getSelection();
-	
-	if (selection.rangeCount) {
-		let html = "<video width='" + width + "' height='" + height +  "' controls><source src='" + url + "' type='" + media_type + "'></video>";
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(html);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
-	}
-
+	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
+	let html = "<video width='" + width + "' height='" + height +  "' controls><source src='" + url + "' type='" + media_type + "'></video>";
+	insertHTMLCode(window.getSelection(), html)
 }
 
 function insertLink(link_type) {
-	
 	setEditorFocus();
-	
 	let url = prompt("Enter Link");
 	if (!url) return;
-
 	let tag = document.createElement("a");
 	let selection = window.getSelection();
 	let selected_text = selection.toString();
@@ -126,19 +64,8 @@ function insertLink(link_type) {
 	} else {
 		html = "<a href='" + link_type + url + "'>" + url + "</a>";
 	}
-	if (selection.rangeCount) {
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(html);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
-	}
-	
+	insertHTMLCode(selection, html);
 }
-
-
 
 function insertHeadingIndex() {
 	let heading_index = "";
@@ -152,61 +79,30 @@ function insertHeadingIndex() {
 			anchor_number++;
 		}
 	}
-	
 	heading_index = "<ul id='heading-index'>\n" + heading_index + "</ul>\n";
-	
-	let selection = window.getSelection();
-
-	if (selection.rangeCount) {
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(heading_index);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
-	}	
+	insertHTMLCode(window.getSelection(), heading_index);
 }
-
 
 function insertTable() {
-	
 	setEditorFocus();
-	
 	let rows = prompt("Enter number of rows");
 	let columns = prompt("Enter number of columns");
-	
-	if (!rows || !columns) return;
-	
-	let selection = window.getSelection();
-	if (selection.rangeCount) {
-		
-		let html = "<table border='1' cellspacing='0' cellpadding='3' style='min-width:50%'>";
-		for (let i = 0; i < rows; i++) {
-			html = html + "<tr>";
-			for (let k = 0; k < columns; k++) {
-				html = html + "<td>&nbsp;</td>";
-			}
-			html = html + "<tr>";
+	if (Number.isNaN(rows) || Number.isNaN(columns)) return;
+	let html = "<table border='1' cellspacing='0' cellpadding='3' style='min-width:50%'>";
+	for (let i = 0; i < rows; i++) {
+		html = html + "<tr>";
+		for (let k = 0; k < columns; k++) {
+			html = html + "<td>&nbsp;</td>";
 		}
-		
-		html = html + "</table>";
-
-		let range = selection.getRangeAt(0);
-		let fragment = document.createRange().createContextualFragment(html);
-		range.deleteContents();
-		range.insertNode(fragment);
-		range.collapse(false);
-		selection.removeAllRanges();
-		selection.addRange(range);		
+		html = html + "<tr>";
 	}
-	
+	html = html + "</table>";
+	insertHTMLCode(window.getSelection(), html);
 }
 
+
 function changeDirection(dir) {
-	
 	setEditorFocus();
-	
 	let selection = window.getSelection();
 	if (selection.rangeCount) selection.anchorNode.parentNode.setAttribute("dir",dir);
 }
@@ -214,4 +110,16 @@ function changeDirection(dir) {
 
 function setEditorFocus() {
 	document.getElementById("editor").focus();
+}
+
+function insertHTMLCode(selection, html) {
+	if (selection.rangeCount) {
+		let range = selection.getRangeAt(0);
+		let fragment = document.createRange().createContextualFragment(html);
+		range.deleteContents();
+		range.insertNode(fragment);
+		range.collapse(false);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
 }
