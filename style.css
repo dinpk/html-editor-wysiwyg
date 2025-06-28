@@ -48,22 +48,14 @@ body {
 }
 
 .editor {
-    min-height: 300px;
-    padding: 15px;
-    outline: none; /* Remove default focus outline */
+    height: 72vh;
+    padding: 10px;
     line-height: 1.6;
+    overflow:auto;
 }
 
-/* Basic styling for content within the editor */
 .editor p {
     margin-bottom: 10px;
-}
-
-
-
-.arabicinline {
-	font-family:calibri;
-	color:red;
 }
 
 #heading-index {list-style-type:none;}

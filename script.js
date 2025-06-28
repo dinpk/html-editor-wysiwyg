@@ -21,7 +21,7 @@ function insertTag(tag_name, class_name) {
 	if (class_name) {
 		tag.className = class_name;
 	}
-	insertHTMLCode(selection,tag);
+	insertHTMLCode(selection,tag.outerHTML);
 }
 
 function insertImage() {
@@ -83,12 +83,25 @@ function insertHeadingIndex() {
 	insertHTMLCode(window.getSelection(), heading_index);
 }
 
+
+// insert table
+let saved_range;
+function saveSelectionRange() {
+	let selection = window.getSelection();
+	if (selection.rangeCount) saved_range = selection.getRangeAt(0);
+}
+
 function insertTable() {
 	setEditorFocus();
-	let rows = prompt("Enter number of rows");
-	let columns = prompt("Enter number of columns");
-	if (Number.isNaN(rows) || Number.isNaN(columns)) return;
-	let html = "<table border='1' cellspacing='0' cellpadding='3' style='min-width:50%'>";
+	let rows = document.getElementById('editor-table-rows').value;
+	let columns = document.getElementById('editor-table-columns').value;
+	let padding = document.getElementById('editor-table-padding').value;
+	let spacing = document.getElementById('editor-table-spacing').value;
+	let border = document.getElementById('editor-table-border').value;
+	let width = document.getElementById('editor-table-width').value;
+	let width_type = document.getElementById('editor-table-width-type').value;
+
+	let html = "<table border='" + border + "' cellspacing='" + spacing + "' cellpadding='" + padding + "' style='width:" + width + width_type + "'>";
 	for (let i = 0; i < rows; i++) {
 		html = html + "<tr>";
 		for (let k = 0; k < columns; k++) {
@@ -97,7 +110,19 @@ function insertTable() {
 		html = html + "<tr>";
 	}
 	html = html + "</table>";
-	insertHTMLCode(window.getSelection(), html);
+	
+	let selection = window.getSelection();
+	let fragment = document.createRange().createContextualFragment(html);
+	saved_range.deleteContents();
+	saved_range.insertNode(fragment);
+	saved_range.collapse(false);
+    selection.removeAllRanges()
+	selection.addRange(saved_range);
+	
+	let target_element = saved_range.startContainer;
+	target_element.scrollIntoView({behavior:'instant', block:'nearest'});
+	
+	document.getElementById('editor-table-form').reset();	
 }
 
 
