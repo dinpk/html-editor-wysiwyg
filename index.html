@@ -4,135 +4,39 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Basic WYSIWYG Editor</title>
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="editor-styles.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js" /></script>
 		<script src="script.js"></script>
 	</head>
 	<body>
 		<div class="editor-container">
-			<div class="toolbar">
-				<img src="icons/icon_undo.png" onclick="formatDoc('undo')" title="Undo"> 
-				<img src="icons/icon_redo.png" onclick="formatDoc('redo')" title="Redo"> 
-				<img src="icons/icon_text_copy.png" onclick="formatDoc('copy')" title="Copy"> 
-				<img src="icons/icon_text_cut.png" onclick="formatDoc('cut')" title="Cut"> 
-				<img src="icons/icon_text_paste.png" onclick="formatDoc('paste')" title="Paste"> 
-				<img src="icons/icon_decorate_bold.png" onclick="formatDoc('bold')" title="Bold"> 
-				<img src="icons/icon_decorate_italic.png" onclick="formatDoc('italic')" title="Italic"> 
-				<img src="icons/icon_decorate_underline.png" onclick="formatDoc('underline')" title="Underline"> 
-				<img src="icons/icon_decorate_strikethrough.png" onclick="formatDoc('strikeThrough')" title="Strikethrough">
-				<img src="icons/icon_list_ordered.png" onclick="formatDoc('insertOrderedList')" title="Ordered List">
-				<img src="icons/icon_list_unordered.png" onclick="formatDoc('insertUnorderedList')" title="Unordered List"> 
-				<img src="icons/icon_link_web.png" onclick="formatDoc('createLink', prompt('Enter Link:'))" title="Web Link"> 
-				<img src="icons/icon_link_email.png" onclick="insertLink('mailto:')" title="Email Link"> 
-				<img src="icons/icon_link_phone.png" onclick="insertLink('tel:')" title="Phone Link"> 
-				<img src="icons/icon_unlink.png" onclick="formatDoc('unlink')" title="Unlink"> 
-				<img src="icons/icon_superscript.png" onclick="formatDoc('superscript')" title="Superscript"> 
-				<img src="icons/icon_subscript.png" onclick="formatDoc('subscript')" title="Subscript"> 
-				<img src="icons/icon_align_left.png" onclick="formatDoc('justifyLeft')" title="Align Left"> 
-				<img src="icons/icon_align_center.png" onclick="formatDoc('justifyCenter')" title="Align Center"> 
-				<img src="icons/icon_align_right.png" onclick="formatDoc('justifyRight')" title="Align Right"> 
-				<img src="icons/icon_align_justify.png" onclick="formatDoc('justifyFull')" title="Justify"> 
-				<img src="icons/icon_unformat.png" onclick="formatDoc('removeFormat')" title="Remove Formatting"> 
-				<img src="icons/icon_indent.png" onclick="formatDoc('indent')" title="Indent"> 
-				<img src="icons/icon_outdent.png" onclick="formatDoc('outdent')" title="Outdent"> 
-				<img src="icons/icon_line_break.png" onclick="insertTag('br')" title="Linebreak">
-				<img src="icons/icon_horizontal_rule.png" onclick="formatDoc('insertHorizontalRule')" title="Horizontal Rule"> 
-				<img src="icons/icon_image_insert.png" onclick="insertImage()" title="Image URL"> 
-				<img src="icons/icon_audio_insert.png" onclick="insertMedia('video/mp4')" title="MP4 Video"> 
-				<img src="icons/icon_video_insert.png" onclick="insertMedia('audio/mp3')" title="MP3 Audio"> 
-				<input type="color" onchange="formatDoc('foreColor', this.value)" title="Text Color"> 
-				<input type="color" onchange="formatDoc('backColor', this.value)" title="Background Color"> 
-				<select onchange="formatDoc('formatBlock', this.value)" title="Block Elements">
-					<option value="p"></option>
-					<option value="p">Paragraph</option>
-					<option value="h1">Heading 1</option>
-					<option value="h2">Heading 2</option>
-					<option value="h3">Heading 3</option>
-					<option value="h4">Heading 4</option>
-					<option value="h5">Heading 5</option>
-					<option value="h6">Heading 6</option>
-					<option value="address">Address</option>
-					<option value="pre">Pre</option>
-				</select>
-				<select onchange="insertTag(this.value)" title="Inline Elements">
-					<option value=""></option>
-					<option value="abbr">Abbreviation</option>
-					<option value="acronym">Acronym</option>
-					<option value="bdo">Bi-directional</option>
-					<option value="big">Big</option>
-					<option value="cite">Citation</option>
-					<option value="code">Code</option>
-					<option value="dfn">Definition</option>
-					<option value="em">Emphasis</option>
-					<option value="kbd">Keyboard</option>
-					<option value="output">Output</option>
-					<option value="q">Short quote</option>
-					<option value="samp">Sample</option>
-					<option value="small">Small</option>
-					<option value="span">Span</option>
-					<option value="strong">Strong</option>
-					<option value="time">Time</option>
-					<option value="var">Var</option>
-				</select>
-				<img src="icons/icon_blockquote.png" onclick="formatDoc('formatBlock', 'blockquote')" title="Blockquote"> 
-				<img src="icons/icon_text_ltr.png" onclick="changeDirection('ltr')" title="Left to Right"> 
-				<img src="icons/icon_text_rtl.png" onclick="changeDirection('rtl')" title="Right to Left"> 
-				<img src="icons/icon_table.png" onclick="saveSelectionRange();document.getElementById('editor-table').showModal();" title="Insert Table"> 
-				<img src="icons/icon_html.png" onclick="insertHTML()" title="Insert HTML"> 
-				<img src="icons/icon_heading_index.png" onclick="insertHeadingIndex()" title="Insert Heading Index"> 
-			</div>
-
-			<div id="editor" class="editor" contenteditable="true">
-				<article>
-					<h1>The Core Technologies of Web Development: HTML, CSS, and JavaScript</h1>
-					<p>In the vast and ever-evolving world of web development, three core technologies stand out as the fundamental building blocks of almost every website and web application you interact with daily: HTML, CSS, and JavaScript. These technologies work in synergy to create the rich, interactive, and visually appealing experiences we've come to expect on the internet.</p>
-					<h2>1. HTML: The Structure of the Web</h2>
-					<p><strong>HTML</strong>, which stands for HyperText Markup Language, is the backbone of any web page. It provides the structure and content, defining the different elements that make up a document. Think of HTML as the skeleton of a website; it dictates where text, images, videos, and other components will reside.</p>
-					<p>HTML uses a system of "tags" to mark up content. Each tag serves a specific purpose, indicating the nature of the content it encloses.</p>
-					<p>Without HTML, there would be no web content to display. It's the essential first step in creating any web presence.</p>
-					<h2>2. CSS: The Style and Presentation Layer</h2>
-					<p>Once you have the structure defined with HTML, <strong>CSS</strong> (Cascading Style Sheets) comes into play to make your website visually appealing. CSS is responsible for the look and feel of your web page – the colors, fonts, spacing, layout, and overall presentation.</p>
-					<p>Imagine a well-built house (HTML). Without paint, wallpaper, furniture, and landscaping (CSS), it would just be a bare structure. CSS allows you to transform plain HTML into a beautifully designed interface.</p>
-					<p>CSS offers immense power and flexibility, allowing developers to create responsive designs that adapt to different screen sizes and devices.</p>
-					<h2>3. JavaScript: The Interactivity and Behavior Engine</h2>
-					<p>While HTML provides the structure and CSS handles the styling, <strong>JavaScript</strong> is what brings your website to life. It's a programming language that enables interactive and dynamic content. Think of JavaScript as the nervous system and brain of your website, allowing it to respond to user actions.</p>
-					<p>With JavaScript, you can:</p>
-					<ul>
-					<li>Create animations and visual effects.</li>
-					<li>Validate forms before submission.</li>
-					<li>Manipulate HTML and CSS on the fly.</li>
-					<li>Build complex web applications, games, and more.</li>
-					<li>Communicate with servers to fetch and display data without reloading the page.</li>
-					</ul>
-					<p>JavaScript has evolved significantly and is now used for far more than just front-end interactivity, including back-end development with Node.js and mobile app development.</p>
-					<h2>Conclusion</h2>
-					<p>HTML, CSS, and JavaScript are essential tools for modern web development. They form a powerful ecosystem where HTML provides the content, CSS beautifies it, and JavaScript adds intelligence and interactivity. Mastering these three core technologies is the essential first step for anyone aspiring to build for the web.</p>
-					<p>As you delve deeper into web development, you'll encounter frameworks and libraries built upon these fundamentals, but understanding the basics of HTML, CSS, and JavaScript will always remain the cornerstone of your journey.</p>
-				</article>
+			<div id="related_html_code"></div>
+			<div id="basic-editor" class="basic-editor" contenteditable="true">
+				<h1>The Core Technologies of Web Development: HTML, CSS, and JavaScript</h1>
+				<p>In the vast and ever-evolving world of web development, three core technologies stand out as the fundamental building blocks of almost every website and web application you interact with daily: HTML, CSS, and JavaScript. These technologies work in synergy to create the rich, interactive, and visually appealing experiences we've come to expect on the internet.</p>
+				<h2>1. HTML: The Structure of the Web</h2>
+				<p><strong>HTML</strong>, which stands for HyperText Markup Language, is the backbone of any web page. It provides the structure and content, defining the different elements that make up a document. Think of HTML as the skeleton of a website; it dictates where text, images, videos, and other components will reside.</p>
+				<p>HTML uses a system of "tags" to mark up content. Each tag serves a specific purpose, indicating the nature of the content it encloses.</p>
+				<p>Without HTML, there would be no web content to display. It's the essential first step in creating any web presence.</p>
+				<h2>2. CSS: The Style and Presentation Layer</h2>
+				<p>Once you have the structure defined with HTML, <strong>CSS</strong> (Cascading Style Sheets) comes into play to make your website visually appealing. CSS is responsible for the look and feel of your web page – the colors, fonts, spacing, layout, and overall presentation.</p>
+				<p>Imagine a well-built house (HTML). Without paint, wallpaper, furniture, and landscaping (CSS), it would just be a bare structure. CSS allows you to transform plain HTML into a beautifully designed interface.</p>
+				<p>CSS offers immense power and flexibility, allowing developers to create responsive designs that adapt to different screen sizes and devices.</p>
+				<h2>3. JavaScript: The Interactivity and Behavior Engine</h2>
+				<p>While HTML provides the structure and CSS handles the styling, <strong>JavaScript</strong> is what brings your website to life. It's a programming language that enables interactive and dynamic content. Think of JavaScript as the nervous system and brain of your website, allowing it to respond to user actions.</p>
+				<p>With JavaScript, you can:</p>
+				<ul>
+				<li>Create animations and visual effects.</li>
+				<li>Validate forms before submission.</li>
+				<li>Manipulate HTML and CSS on the fly.</li>
+				<li>Build complex web applications, games, and more.</li>
+				<li>Communicate with servers to fetch and display data without reloading the page.</li>
+				</ul>
+				<p>JavaScript has evolved significantly and is now used for far more than just front-end interactivity, including back-end development with Node.js and mobile app development.</p>
+				<h2>Conclusion</h2>
+				<p>HTML, CSS, and JavaScript are essential tools for modern web development. They form a powerful ecosystem where HTML provides the content, CSS beautifies it, and JavaScript adds intelligence and interactivity. Mastering these three core technologies is the essential first step for anyone aspiring to build for the web.</p>
+				<p>As you delve deeper into web development, you'll encounter frameworks and libraries built upon these fundamentals, but understanding the basics of HTML, CSS, and JavaScript will always remain the cornerstone of your journey.</p>
 			</div>
 		</div>
-		
-		<dialog id="editor-table">
-			<form id="editor-table-form">
-			<table>
-				<tr><td>Rows</td><td><input id="editor-table-rows" type="number" min="1" value="4"></td></tr>
-				<tr><td>Columns</td><td><input id="editor-table-columns" type="number" min="1" value="4"></td></tr>
-				<tr><td>Padding</td><td><input id="editor-table-padding" type="number" min="1" value="1"></td></tr>
-				<tr><td>Spacing</td><td><input id="editor-table-spacing" type="number" min="1" value="0"></td></tr>
-				<tr><td>Border</td><td><input id="editor-table-border" type="number" min="1" max="10" value="1"></td></tr>
-				<tr>
-					<td>Width</td>
-					<td>
-						<input id="editor-table-width" type="number" min="5" value="50">
-						<select id="editor-table-width-type">
-							<option>%</option>
-							<option>px</option>
-						</select>
-					</td>
-				</tr>
-			</table>
-			<input type="button" value="Submit" onclick="document.getElementById('editor-table').close();insertTable();">
-			</form>
-		</dialog>
-		
 	</body>
 </html>

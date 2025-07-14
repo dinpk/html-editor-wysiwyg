@@ -1,7 +1,3 @@
-window.onload = function() {
-	setEditorFocus();
-}
-
 function formatDoc(command, value = null) {
 	setEditorFocus();
     if (value) {
@@ -74,12 +70,12 @@ function insertHeadingIndex() {
 	for (let i = 0; i < all_elements.length; i++) {
 		element_name = all_elements[i].localName;
 		if (element_name == "h1" || element_name == "h2" || element_name == "h3" || element_name == "h4" || element_name == "h5" || element_name == "h6") {
-			heading_index += "<li class='level-" + element_name + "'><a href='#anchor-" + anchor_number + "'>" + all_elements[i].innerHTML + "</a></li>\n";
+			heading_index = heading_index + "<li class='level-" + element_name + "'><a href='#anchor-" + anchor_number + "'>" + all_elements[i].innerHTML + "</a></li>\n";
 			all_elements[i].innerHTML = "<a name='anchor-" + anchor_number + "'></a>" + all_elements[i].innerHTML;
 			anchor_number++;
 		}
 	}
-	heading_index = "<ul id='heading-index'>\n" + heading_index + "</ul>\n";
+	heading_index = "<ul class='heading-index'>\n" + heading_index + "</ul>\n";
 	insertHTMLCode(window.getSelection(), heading_index);
 }
 
@@ -120,9 +116,9 @@ function insertTable() {
 	selection.addRange(saved_range);
 	
 	let target_element = saved_range.startContainer;
-	target_element.scrollIntoView({behavior:'instant', block:'nearest'});
+	target_element.scrollIntoView({behavior:"instant", block:"nearest"});
 	
-	document.getElementById('editor-table-form').reset();	
+	document.getElementById("editor-table-form").reset();	
 }
 
 
@@ -134,7 +130,7 @@ function changeDirection(dir) {
 
 
 function setEditorFocus() {
-	document.getElementById("editor").focus();
+	document.getElementById("basic-editor").focus();
 }
 
 function insertHTMLCode(selection, html) {
@@ -148,3 +144,46 @@ function insertHTMLCode(selection, html) {
 		selection.addRange(range);
 	}
 }
+
+
+// after all page elements loaded
+
+window.onload = function() {
+	
+	// sanitize pasted html
+	let basic_editor = document.getElementById("basic-editor");
+	basic_editor.addEventListener("paste", function(event) {
+		event.preventDefault(); // prevent default paste
+		let clipboard_data = event.clipboardData || window.clipboardData;
+		let pasted_html = clipboard_data.getData("text/html");
+		let pasted_text = clipboard_data.getData("text/plain");
+
+		let content_to_insert;
+		if (pasted_html) {
+			content_to_insert = DOMPurify.sanitize(pasted_html, { // sanitize html before paste
+				USE_PROFILES: { html: true },
+				FORBID_TAGS: ["script", "iframe", "style", "link", "object", "embed"],
+				FORBID_ATTR: ["on*"], 
+				ALLOW_DATA_ATTR: false,
+			});
+		} else { // paste text if no html
+			content_to_insert = pasted_text;
+		}
+
+		document.execCommand("insertHTML", false, content_to_insert);
+	});
+
+	// load related html code
+	fetch("related_html_code.html")
+		.then(function(response) {
+			return response.text();
+		})
+		.then(function(data) {
+			document.getElementById("related_html_code").innerHTML = data;
+		});
+
+
+	setEditorFocus();
+
+}
+
