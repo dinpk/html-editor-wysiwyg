@@ -25,7 +25,7 @@
 	<img src="icons/icon_outdent.png" onclick="formatDoc('outdent')" title="Outdent"> 
 	<img src="icons/icon_line_break.png" onclick="insertTag('br')" title="Linebreak">
 	<img src="icons/icon_horizontal_rule.png" onclick="formatDoc('insertHorizontalRule')" title="Horizontal Rule"> 
-	<img src="icons/icon_image_insert.png" onclick="insertImage()" title="Image URL"> 
+	<img src="icons/icon_image_insert.png" onclick="saveSelectionRange();document.getElementById('image-url-dialog').showModal();" title="Insert Image"> 	
 	<img src="icons/icon_audio_insert.png" onclick="insertMedia('video/mp4')" title="MP4 Video"> 
 	<img src="icons/icon_video_insert.png" onclick="insertMedia('audio/mp3')" title="MP3 Audio"> 
 	<input type="color" onchange="formatDoc('foreColor', this.value)" title="Text Color"> 
@@ -65,7 +65,7 @@
 	<img src="icons/icon_blockquote.png" onclick="formatDoc('formatBlock', 'blockquote')" title="Blockquote"> 
 	<img src="icons/icon_text_ltr.png" onclick="changeDirection('ltr')" title="Left to Right"> 
 	<img src="icons/icon_text_rtl.png" onclick="changeDirection('rtl')" title="Right to Left"> 
-	<img src="icons/icon_table.png" onclick="saveSelectionRange();document.getElementById('editor-table').showModal();" title="Insert Table"> 
+	<img src="icons/icon_table.png" onclick="saveSelectionRange();document.getElementById('table-dialog').showModal();" title="Insert Table"> 
 	<img src="icons/icon_html.png" onclick="insertHTML()" title="Insert HTML"> 
 	<img src="icons/icon_heading_index.png" onclick="insertHeadingIndex()" title="Insert Heading Index"> 
 	<img src="icons/icon_remove_formatting.png" onclick="formatDoc('removeFormat')" title="Remove Inline/Manual Formatting"> 
@@ -73,26 +73,56 @@
 </div>
 
 
-<dialog id="editor-table">
-	<form id="editor-table-form">
+<dialog id="image-url-dialog">
+	<form id="dialog-image-url-form">
 	<table>
-		<tr><td>Rows</td><td><input id="editor-table-rows" type="number" min="1" value="4"></td></tr>
-		<tr><td>Columns</td><td><input id="editor-table-columns" type="number" min="1" value="4"></td></tr>
-		<tr><td>Padding</td><td><input id="editor-table-padding" type="number" min="1" value="1"></td></tr>
-		<tr><td>Spacing</td><td><input id="editor-table-spacing" type="number" min="1" value="0"></td></tr>
-		<tr><td>Border</td><td><input id="editor-table-border" type="number" min="1" max="10" value="1"></td></tr>
+		<tr><td>URL</td><td><input id="dialog-image-url" type="text"></td></tr>
+		<tr><td>Width</td><td><input id="dialog-image-url-width" type="number" min="50" value="50"></td></tr>
+		<tr><td>Height</td><td><input id="dialog-image-url-height" type="number" min="50" value="50"></td></tr>
+		<tr><td>Type</td>
+			<td>
+				<select id="dialog-image-size-type">
+					<option>%</option>
+					<option>px</option>
+				</select>
+			</td>
+		</tr>
+		<tr><td>Align</td>
+			<td>
+				<select id="dialog-image-url-align">
+					<option>left</option>
+					<option>center</option>
+					<option>right</option>
+				</select>
+			</td>
+		</tr>
+	</table>
+	<input type="button" value="Submit" onclick="document.getElementById('image-url-dialog').close();insertImage();">
+	</form>
+</dialog>
+
+
+
+<dialog id="table-dialog">
+	<form id="dialog-table-form">
+	<table>
+		<tr><td>Rows</td><td><input id="dialog-table-rows" type="number" min="1" value="4"></td></tr>
+		<tr><td>Columns</td><td><input id="dialog-table-columns" type="number" min="1" value="4"></td></tr>
+		<tr><td>Padding</td><td><input id="dialog-table-padding" type="number" min="1" value="1"></td></tr>
+		<tr><td>Spacing</td><td><input id="dialog-table-spacing" type="number" min="1" value="0"></td></tr>
+		<tr><td>Border</td><td><input id="dialog-table-border" type="number" min="1" max="10" value="1"></td></tr>
 		<tr>
 			<td>Width</td>
 			<td>
-				<input id="editor-table-width" type="number" min="5" value="50">
-				<select id="editor-table-width-type">
+				<input id="dialog-table-width" type="number" min="5" value="50">
+				<select id="dialog-table-width-type">
 					<option>%</option>
 					<option>px</option>
 				</select>
 			</td>
 		</tr>
 	</table>
-	<input type="button" value="Submit" onclick="document.getElementById('editor-table').close();insertTable();">
+	<input type="button" value="Submit" onclick="document.getElementById('table-dialog').close();insertTable();">
 	</form>
 </dialog>
 

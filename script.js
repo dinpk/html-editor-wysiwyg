@@ -20,15 +20,6 @@ function insertTag(tag_name, class_name) {
 	insertHTMLCode(selection,tag.outerHTML);
 }
 
-function insertImage() {
-	setEditorFocus();
-	let url = prompt("Enter image URL");
-	let width = prompt("Enter width in px, %, auto");
-	let height = prompt("Enter height in px, %, auto");
-	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
-	let html = "<img src='" + url + "' style='width:" + width + ";height:" + height + ";'>";
-	insertHTMLCode(window.getSelection(), html);
-}
 
 function insertHTML() {
 	setEditorFocus();
@@ -89,13 +80,13 @@ function saveSelectionRange() {
 
 function insertTable() {
 	setEditorFocus();
-	let rows = document.getElementById('editor-table-rows').value;
-	let columns = document.getElementById('editor-table-columns').value;
-	let padding = document.getElementById('editor-table-padding').value;
-	let spacing = document.getElementById('editor-table-spacing').value;
-	let border = document.getElementById('editor-table-border').value;
-	let width = document.getElementById('editor-table-width').value;
-	let width_type = document.getElementById('editor-table-width-type').value;
+	let rows = document.getElementById("dialog-table-rows").value;
+	let columns = document.getElementById("dialog-table-columns").value;
+	let padding = document.getElementById("dialog-table-padding").value;
+	let spacing = document.getElementById("dialog-table-spacing").value;
+	let border = document.getElementById("dialog-table-border").value;
+	let width = document.getElementById("dialog-table-width").value;
+	let width_type = document.getElementById("dialog-table-width-type").value;
 
 	let html = "<table border='" + border + "' cellspacing='" + spacing + "' cellpadding='" + padding + "' style='width:" + width + width_type + "'>";
 	for (let i = 0; i < rows; i++) {
@@ -118,7 +109,32 @@ function insertTable() {
 	let target_element = saved_range.startContainer;
 	target_element.scrollIntoView({behavior:"instant", block:"nearest"});
 	
-	document.getElementById("editor-table-form").reset();	
+	document.getElementById("dialog-table-form").reset();	
+}
+
+
+function insertImage() {
+	setEditorFocus();
+	let url = document.getElementById("dialog-image-url").value;
+	let width = document.getElementById("dialog-image-url-width").value;
+	let height = document.getElementById("dialog-image-url-height").value;
+	let size_type = document.getElementById("dialog-image-size-type").value;
+	let align = document.getElementById("dialog-image-url-align").value;
+	
+	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
+	let html = "<div style='text-align:" + align + "'><img src='" + url + "' style='width:" + width + size_type + ";height:" + height + size_type + "'></div>";
+	let selection = window.getSelection();
+	let fragment = document.createRange().createContextualFragment(html);
+	saved_range.deleteContents();
+	saved_range.insertNode(fragment);
+	saved_range.collapse(false);
+    selection.removeAllRanges()
+	selection.addRange(saved_range);
+	
+	let target_element = saved_range.startContainer;
+	target_element.scrollIntoView({behavior:"instant", block:"nearest"});
+	
+	document.getElementById("dialog-image-url-form").reset();	
 }
 
 
