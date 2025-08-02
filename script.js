@@ -28,16 +28,6 @@ function insertHTML() {
 	insertHTMLCode(window.getSelection(), html)
 }
 
-function insertMedia(media_type) {
-	setEditorFocus();
-	let url = prompt("Enter full file name");
-	let width = prompt("Enter width in pixels");
-	let height = prompt("Enter height in pixels");
-	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
-	let html = "<video width='" + width + "' height='" + height +  "' controls><source src='" + url + "' type='" + media_type + "'></video>";
-	insertHTMLCode(window.getSelection(), html)
-}
-
 function insertLink(link_type) {
 	setEditorFocus();
 	let url = prompt("Enter Link");
@@ -119,10 +109,15 @@ function insertImage() {
 	let width = document.getElementById("dialog-image-url-width").value;
 	let height = document.getElementById("dialog-image-url-height").value;
 	let size_type = document.getElementById("dialog-image-size-type").value;
-	let align = document.getElementById("dialog-image-url-align").value;
+	let halign = document.getElementById("dialog-image-url-halign").value;
+	let valign = document.getElementById("dialog-image-url-valign").value;
+	let spacing = document.getElementById("dialog-image-spacing").value;
 	
 	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
-	let html = "<div style='text-align:" + align + "'><img src='" + url + "' style='width:" + width + size_type + ";height:" + height + size_type + "'></div>";
+	let html = "<img src='" + url + "' style='vertical-align:" + valign + ";margin:" + spacing + "px;width:" + width + size_type + ";height:" + height + size_type + "'>";
+	if (halign != "center") {
+		html = "<span style='float:" + halign + "'>" + html + "</span>";
+	}
 	let selection = window.getSelection();
 	let fragment = document.createRange().createContextualFragment(html);
 	saved_range.deleteContents();
@@ -138,12 +133,49 @@ function insertImage() {
 }
 
 
+function insertMedia() {
+	setEditorFocus();
+	let url = document.getElementById("dialog-media-url").value;
+	let width = document.getElementById("dialog-media-url-width").value;
+	let height = document.getElementById("dialog-media-url-height").value;
+	let media_type = document.getElementById("dialog-media-type").value;
+	let size_type = document.getElementById("dialog-media-size-type").value;
+	
+	if (!url || Number.isNaN(width) || Number.isNaN(height)) return;
+	let html = "<video width='" + width + size_type + "' height='" + height + size_type + "' controls><source src='" + url + "' type='" + media_type + "'></video>";	
+
+	let selection = window.getSelection();
+	let fragment = document.createRange().createContextualFragment(html);
+	saved_range.deleteContents();
+	saved_range.insertNode(fragment);
+	saved_range.collapse(false);
+    selection.removeAllRanges()
+	selection.addRange(saved_range);
+	
+	let target_element = saved_range.startContainer;
+	target_element.scrollIntoView({behavior:"instant", block:"nearest"});
+	
+	document.getElementById("dialog-media-url-form").reset();	
+}
+
+
 function changeDirection(dir) {
 	setEditorFocus();
 	let selection = window.getSelection();
 	if (selection.rangeCount) selection.anchorNode.parentNode.setAttribute("dir",dir);
 }
 
+
+function removeBlockFormatting() {
+	setEditorFocus();
+	let selection = window.getSelection();
+	if (selection.rangeCount) {
+		console.log(selection.anchorNode.tagName);
+		if (selection.anchorNode.parentNode.tagName != "DIV") {
+			selection.anchorNode.parentNode.outerHTML = selection.anchorNode.parentNode.innerText;
+		}
+	}
+}
 
 function setEditorFocus() {
 	document.getElementById("basic-editor").focus();
